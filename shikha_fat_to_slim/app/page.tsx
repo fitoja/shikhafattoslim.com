@@ -1,20 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import {
   CheckCircle,
-  Star,
   Phone,
-  Award,
   MapPin,
   Mail,
-  Play,
   ArrowRight,
-  ExternalLink,
   Quote,
   ShieldCheck,
-  Globe,
+  Send,
+  Loader2,
 } from "lucide-react";
 
 import ShikhaImg from "../public/assets/shikha.png";
@@ -55,6 +52,78 @@ const YoutubeLogo = ({ size = 24 }) => (
 );
 
 export default function LandingPage() {
+  const [consultationForm, setConsultationForm] = useState({
+    name: "",
+    phone: "",
+    height: "",
+    weight: "",
+    age: "",
+  });
+  const [formStatus, setFormStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [formMessage, setFormMessage] = useState("");
+
+  const handleConsultationChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const fieldName = event.target.name as keyof typeof consultationForm;
+
+    setConsultationForm((current) => ({
+      ...current,
+      [fieldName]: event.target.value,
+    }));
+
+    if (formStatus !== "idle") {
+      setFormStatus("idle");
+      setFormMessage("");
+    }
+  };
+
+  const handleConsultationSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    setFormStatus("submitting");
+    setFormMessage("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(consultationForm),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        message?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to send your details.");
+      }
+
+      setConsultationForm({
+        name: "",
+        phone: "",
+        height: "",
+        weight: "",
+        age: "",
+      });
+      setFormStatus("success");
+      setFormMessage(
+        data.message || "Thank you. Your details have been sent successfully.",
+      );
+    } catch (error) {
+      setFormStatus("error");
+      setFormMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-rose-600 selection:text-white">
       {/* --- NAVIGATION --- */}
@@ -86,7 +155,7 @@ export default function LandingPage() {
           </div>
 
           <a
-            href="https://wa.me/918860129015"
+            href="https://wa.me/919211505566"
             target="_blank"
             className="bg-rose-600 text-white px-8 py-4 rounded-full font-black shadow-lg shadow-rose-100 hover:bg-black transition-all text-xs uppercase tracking-widest active:scale-95"
           >
@@ -139,10 +208,13 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <button className="bg-black text-white px-12 py-6 rounded-2xl font-black text-lg shadow-2xl hover:bg-rose-600 transition-all flex items-center group">
+            <a
+              href="#contact"
+              className="bg-black text-white px-12 py-6 rounded-2xl font-black text-lg shadow-2xl hover:bg-rose-600 transition-all inline-flex items-center group"
+            >
               Start Your Journey{" "}
               <ArrowRight className="ml-3 group-hover:translate-x-1 transition" />
-            </button>
+            </a>
           </div>
 
           <div className="relative">
@@ -184,40 +256,69 @@ export default function LandingPage() {
               </h2>
 
               <p className="text-slate-400 text-xl mb-10 leading-relaxed font-light">
-                Watch Shikha present her revolutionary "Kitchen Spice" concept
-                to the Sharks, disrupting the fitness industry without a single
-                gym workout.
+                Shikha brought her &quot;Kitchen Spice&quot; approach to a national
+                audience, spotlighting a simple belief: sustainable weight loss
+                can begin with the food already cooked in Indian homes.
               </p>
 
-              <div className="flex items-center space-x-6">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="w-12 h-12 rounded-full border-4 border-[#0F1115] bg-slate-800 overflow-hidden"
-                    >
-                      <img
-                        src={`https://i.pravatar.cc/100?img=${i + 15}`}
-                        alt="User"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-none">
-                  Trusted by <br /> 1M+ Viewers
-                </p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  "Home-style meals over crash diets",
+                  "No gym-first pressure",
+                  "Metabolism-focused guidance",
+                  "Indian spices and practical routines",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4"
+                  >
+                    <CheckCircle className="text-rose-500" size={18} />
+                    <span className="text-sm font-bold text-slate-200">
+                      {item}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* VIDEO */}
-            <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(225,29,72,0.15)] border border-white/10 group">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/6FsYNwfgpZI?rel=0"
-                title="Shikha Shark Tank"
-                allowFullScreen
-              ></iframe>
+            <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-8 md:p-10 shadow-[0_0_80px_rgba(225,29,72,0.12)]">
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500 mb-6">
+                Why it mattered
+              </p>
+
+              <h3 className="text-3xl md:text-4xl font-black leading-tight mb-6">
+                A wellness idea rooted in everyday Indian kitchens.
+              </h3>
+
+              <p className="text-slate-400 text-lg leading-relaxed mb-8">
+                The feature helped more people discover Shikha&apos;s practical
+                nutrition philosophy: eat familiar food, build consistency, and
+                support the body&apos;s metabolism without turning health into a
+                punishment.
+              </p>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="rounded-2xl bg-black/30 p-5 border border-white/10">
+                  <p className="text-3xl font-black text-white">10k+</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-2">
+                    Stories
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-black/30 p-5 border border-white/10">
+                  <p className="text-3xl font-black text-white">0</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-2">
+                    Gym Rules
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-black/30 p-5 border border-white/10">
+                  <p className="text-3xl font-black text-white">100%</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-2">
+                    Natural
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -228,7 +329,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-24">
             <h2 className="text-4xl md:text-6xl font-black mb-6 italic tracking-tighter">
-              The "Kitchen Spice" Secret
+              The &quot;Kitchen Spice&quot; Secret
             </h2>
 
             <div className="w-24 h-1.5 bg-rose-600 mx-auto rounded-full mb-8" />
@@ -290,6 +391,137 @@ export default function LandingPage() {
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-rose-50/30 to-transparent -z-0" />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start mb-24">
+            <div className="lg:col-span-5">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-600 mb-5">
+                Contact Us
+              </h4>
+
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-6">
+                Get a consultation call
+              </h2>
+
+              <p className="text-slate-500 text-lg leading-relaxed font-medium max-w-md">
+                Share your basic details and the team will receive them
+                directly for follow-up.
+              </p>
+            </div>
+
+            <div className="lg:col-span-7">
+              <form
+                className="bg-white border border-slate-100 rounded-[2rem] p-6 md:p-8 shadow-xl shadow-slate-200/60"
+                onSubmit={handleConsultationSubmit}
+              >
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Name
+                    </span>
+                    <input
+                      name="name"
+                      type="text"
+                      value={consultationForm.name}
+                      onChange={handleConsultationChange}
+                      required
+                      autoComplete="name"
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Your name"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Phone number
+                    </span>
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={consultationForm.phone}
+                      onChange={handleConsultationChange}
+                      required
+                      autoComplete="tel"
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="+91 98765 43210"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Height
+                    </span>
+                    <input
+                      name="height"
+                      type="text"
+                      value={consultationForm.height}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Example: 5'6 or 168 cm"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Weight
+                    </span>
+                    <input
+                      name="weight"
+                      type="text"
+                      value={consultationForm.weight}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Example: 72 kg"
+                    />
+                  </label>
+
+                  <label className="block sm:col-span-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Age
+                    </span>
+                    <input
+                      name="age"
+                      type="number"
+                      min="1"
+                      max="120"
+                      value={consultationForm.age}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Your age"
+                    />
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={formStatus === "submitting"}
+                  className="mt-5 w-full rounded-2xl bg-rose-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-rose-100 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70 flex items-center justify-center gap-3"
+                >
+                  {formStatus === "submitting" ? (
+                    <Loader2 className="animate-spin" size={18} />
+                  ) : (
+                    <Send size={18} />
+                  )}
+                  {formStatus === "submitting" ? "Sending" : "Send Details"}
+                </button>
+
+                {formMessage && (
+                  <p
+                    aria-live="polite"
+                    className={`mt-4 text-sm font-bold ${
+                      formStatus === "success"
+                        ? "text-emerald-600"
+                        : "text-rose-600"
+                    }`}
+                  >
+                    {formMessage}
+                  </p>
+                )}
+              </form>
+            </div>
+          </div>
+
           <div className="grid lg:grid-cols-12 gap-16 mb-24">
             <div className="lg:col-span-5 text-center lg:text-left">
               {/* FOOTER LOGO */}
@@ -302,7 +534,7 @@ export default function LandingPage() {
               </div>
 
               <p className="text-slate-500 text-lg leading-relaxed mb-10 max-w-sm font-medium mx-auto lg:mx-0">
-                Pioneering the "Eat Sleep No Exercise" movement globally.
+                Pioneering the &quot;Eat Sleep No Exercise&quot; movement globally.
                 Headquartered in New Delhi, serving clients worldwide.
               </p>
 
@@ -324,7 +556,7 @@ export default function LandingPage() {
             </div>
 
             <div className="lg:col-span-3">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-600 mb-8">
+              {/* <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-600 mb-8">
                 Headquarters
               </h4>
 
@@ -335,7 +567,7 @@ export default function LandingPage() {
                   25D, Masjid Moth, Phase 1, <br />
                   GK3, New Delhi - 110048
                 </p>
-              </div>
+              </div> */}
             </div>
 
             <div className="lg:col-span-4">
@@ -350,10 +582,10 @@ export default function LandingPage() {
                   </div>
 
                   <a
-                    href="tel:+918860129015"
+                    href="tel:+919211505566"
                     className="text-sm font-bold text-slate-900"
                   >
-                    +91 88601 29015
+                    +91 92115 05566
                   </a>
                 </div>
 

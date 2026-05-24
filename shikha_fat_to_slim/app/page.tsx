@@ -1,17 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   CheckCircle,
   Phone,
-  MapPin,
   Mail,
   ArrowRight,
   Quote,
   ShieldCheck,
   Send,
   Loader2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import ShikhaImg from "../public/assets/shikha.png";
@@ -51,6 +52,91 @@ const YoutubeLogo = ({ size = 24 }) => (
   </svg>
 );
 
+function getCarouselItems(items: MediaItem[], activeIndex: number) {
+  if (items.length <= 3) {
+    return items;
+  }
+
+  return [0, 1, 2].map((offset) => items[(activeIndex + offset) % items.length]);
+}
+
+type MediaSection =
+  | "hero"
+  | "before_after"
+  | "achievements"
+  | "about"
+  | "celebrity_news"
+  | "gallery";
+
+type MediaItem = {
+  id: string;
+  title: string;
+  alt: string;
+  section: MediaSection;
+  url: string;
+  width?: number;
+  height?: number;
+  order: number;
+};
+
+type SectionContent = {
+  key: string;
+  title: string;
+  subtitle: string;
+  body: string;
+  isPublished: boolean;
+  order: number;
+};
+
+type SiteContent = {
+  media: Record<MediaSection, MediaItem[]>;
+  sections: Record<string, SectionContent>;
+};
+
+const fallbackSections: Record<string, SectionContent> = {
+  about: {
+    key: "about",
+    title: "About Shikha Aggarwal Sharma",
+    subtitle: "A practical Indian nutrition philosophy for everyday life.",
+    body: "Shikha helps people move away from crash dieting and build sustainable routines around home-cooked meals, kitchen spices, and metabolism-focused habits.",
+    isPublished: true,
+    order: 1,
+  },
+  before_after: {
+    key: "before_after",
+    title: "Real Transformations",
+    subtitle: "Visible journeys from clients who followed the Fat To Slim plan.",
+    body: "",
+    isPublished: true,
+    order: 2,
+  },
+  achievements: {
+    key: "achievements",
+    title: "Achievements",
+    subtitle: "Milestones, features, and moments of recognition.",
+    body: "",
+    isPublished: true,
+    order: 3,
+  },
+  celebrity_news: {
+    key: "celebrity_news",
+    title: "Celebrity, News and Media",
+    subtitle: "Public highlights, appearances, and media coverage.",
+    body: "",
+    isPublished: true,
+    order: 4,
+  },
+};
+
+const emptyMedia: Record<MediaSection, MediaItem[]> = {
+  hero: [],
+  before_after: [],
+  achievements: [],
+  about: [],
+  celebrity_news: [],
+  gallery: [],
+};
+
 export default function LandingPage() {
   const [consultationForm, setConsultationForm] = useState({
     name: "",
@@ -63,6 +149,30 @@ export default function LandingPage() {
     "idle" | "submitting" | "success" | "error"
   >("idle");
   const [formMessage, setFormMessage] = useState("");
+  const [siteContent, setSiteContent] = useState<SiteContent | null>(null);
+  const [beforeAfterIndex, setBeforeAfterIndex] = useState(0);
+  const [newsIndex, setNewsIndex] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetch("/api/site-content")
+      .then((response) => response.json())
+      .then((content: SiteContent) => {
+        if (isMounted) {
+          setSiteContent(content);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setSiteContent({ media: emptyMedia, sections: fallbackSections });
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleConsultationChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -124,6 +234,31 @@ export default function LandingPage() {
     }
   };
 
+  const media = siteContent?.media ?? emptyMedia;
+  const sections = siteContent?.sections ?? fallbackSections;
+  const heroImage = media.hero[0];
+  const aboutImage = media.about[0];
+  const aboutContent = sections.about ?? fallbackSections.about;
+  const beforeAfterContent =
+    sections.before_after ?? fallbackSections.before_after;
+  const achievementsContent =
+    sections.achievements ?? fallbackSections.achievements;
+  const newsContent = sections.celebrity_news ?? fallbackSections.celebrity_news;
+  const beforeAfterImages = media.before_after.slice(0, 8);
+  const achievementImages = media.achievements.slice(0, 6);
+  const newsImages = media.celebrity_news.slice(0, 6);
+  const safeBeforeAfterIndex = beforeAfterImages.length
+    ? beforeAfterIndex % beforeAfterImages.length
+    : 0;
+  const safeNewsIndex = newsImages.length ? newsIndex % newsImages.length : 0;
+  const beforeAfterCarouselItems = getCarouselItems(
+    beforeAfterImages,
+    safeBeforeAfterIndex,
+  );
+  const newsCarouselItems = getCarouselItems(newsImages, safeNewsIndex);
+  const beforeAfterHasCarousel = beforeAfterImages.length > 3;
+  const newsHasCarousel = newsImages.length > 3;
+
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-rose-600 selection:text-white">
       {/* --- NAVIGATION --- */}
@@ -142,6 +277,9 @@ export default function LandingPage() {
           <div className="hidden lg:flex space-x-10 font-bold text-[11px] uppercase tracking-[0.2em] text-slate-500">
             <a href="#about" className="hover:text-rose-600 transition">
               Philosophy
+            </a>
+            <a href="/about" className="hover:text-rose-600 transition">
+              About Us
             </a>
             <a
               href="#sharktank"
@@ -221,11 +359,23 @@ export default function LandingPage() {
             <div className="absolute -inset-10 bg-rose-50 rounded-full blur-[120px] opacity-60 -z-10" />
 
             <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-2xl border-[20px] border-white aspect-[4/5] bg-slate-50">
-              <Image
-                src={ShikhaImg}
-                alt="Shikha"
-                className="w-full h-full object-cover"
-              />
+              {heroImage ? (
+                <Image
+                  src={heroImage.url}
+                  alt={heroImage.alt || "Shikha Aggarwal Sharma"}
+                  width={heroImage.width || 900}
+                  height={heroImage.height || 1125}
+                  className="w-full h-full object-contain"
+                  priority
+                />
+              ) : (
+                <Image
+                  src={ShikhaImg}
+                  alt="Shikha Aggarwal Sharma"
+                  className="w-full h-full object-contain"
+                  priority
+                />
+              )}
             </div>
 
             <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl z-20 hidden xl:block border border-rose-50">
@@ -380,6 +530,273 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* --- ABOUT US SECTION --- */}
+      <section id="about-us" className="py-28 px-6 bg-slate-50">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
+          <div className="relative order-2 lg:order-1">
+            <div className="aspect-[5/4] rounded-[2.5rem] overflow-hidden bg-white border border-slate-200 shadow-xl">
+              <Image
+                src={aboutImage?.url || ShikhaImg}
+                alt={aboutImage?.alt || "Shikha Aggarwal Sharma"}
+                width={aboutImage?.width || 900}
+                height={aboutImage?.height || 720}
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+
+          <div className="order-1 lg:order-2">
+            <div className="flex items-center space-x-4 mb-8">
+              <span className="h-px w-12 bg-rose-600"></span>
+              <span className="text-rose-600 font-black uppercase tracking-[0.4em] text-[10px]">
+                About Us
+              </span>
+            </div>
+
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight mb-6">
+              {aboutContent.title}
+            </h2>
+
+            <p className="text-xl text-slate-500 leading-relaxed font-medium mb-6">
+              {aboutContent.subtitle}
+            </p>
+
+            <p className="text-slate-600 leading-relaxed text-lg mb-10">
+              {aboutContent.body}
+            </p>
+
+            <a
+              href="/about"
+              className="inline-flex items-center rounded-2xl bg-black px-8 py-4 text-sm font-black uppercase tracking-widest text-white transition hover:bg-rose-600"
+            >
+              Read More
+              <ArrowRight className="ml-3" size={18} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* --- BEFORE AFTER SECTION --- */}
+      <section className="py-28 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
+            <div className="max-w-3xl">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-5">
+                {beforeAfterContent.title}
+              </h2>
+              <p className="text-slate-500 text-xl font-medium leading-relaxed">
+                {beforeAfterContent.subtitle}
+              </p>
+            </div>
+
+            {beforeAfterHasCarousel && (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  aria-label="Previous transformation"
+                  onClick={() =>
+                    setBeforeAfterIndex(
+                      (current) =>
+                        (current - 1 + beforeAfterImages.length) %
+                        beforeAfterImages.length,
+                    )
+                  }
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-600 hover:text-white"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next transformation"
+                  onClick={() =>
+                    setBeforeAfterIndex(
+                      (current) => (current + 1) % beforeAfterImages.length,
+                    )
+                  }
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-600 hover:text-white"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {beforeAfterCarouselItems.map((item) => (
+              <article
+                key={item.id}
+                className="overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-xl shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <div className="aspect-[4/5] bg-slate-100 p-3 flex items-center justify-center">
+                  <Image
+                    src={item.url}
+                    alt={item.alt}
+                    width={item.width || 720}
+                    height={item.height || 900}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="text-lg font-black text-slate-900">
+                    {item.title || "Transformation Story"}
+                  </h3>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {beforeAfterHasCarousel && (
+            <div className="mt-8 flex items-center justify-center gap-2">
+              {beforeAfterImages.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-label={`Show transformation ${index + 1}`}
+                  onClick={() => setBeforeAfterIndex(index)}
+                  className={`h-2.5 rounded-full transition-all ${
+                    index === safeBeforeAfterIndex
+                      ? "w-9 bg-rose-600"
+                      : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* --- ACHIEVEMENTS SECTION --- */}
+      <section className="py-28 px-6 bg-[#0F1115] text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 items-start">
+            <div className="lg:col-span-4">
+              <p className="text-rose-500 font-black uppercase tracking-[0.4em] text-[10px] mb-5">
+                Recognition
+              </p>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-5">
+                {achievementsContent.title}
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed">
+                {achievementsContent.subtitle}
+              </p>
+            </div>
+
+            <div className="lg:col-span-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {achievementImages.map((item) => (
+                <article
+                  key={item.id}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]"
+                >
+                  <div className="aspect-[4/3] bg-slate-900 p-3 flex items-center justify-center">
+                    <Image
+                      src={item.url}
+                      alt={item.alt}
+                      width={item.width || 640}
+                      height={item.height || 480}
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-black text-white">
+                      {item.title || "Achievement"}
+                    </h3>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- NEWS MEDIA SECTION --- */}
+      <section className="py-28 px-6 bg-slate-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
+            <div className="max-w-3xl">
+              <p className="text-rose-600 font-black uppercase tracking-[0.4em] text-[10px] mb-5">
+                Highlights
+              </p>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-5">
+                {newsContent.title}
+              </h2>
+              <p className="text-slate-500 text-xl font-medium leading-relaxed">
+                {newsContent.subtitle}
+              </p>
+            </div>
+
+            {newsHasCarousel && (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  aria-label="Previous media highlight"
+                  onClick={() =>
+                    setNewsIndex(
+                      (current) =>
+                        (current - 1 + newsImages.length) % newsImages.length,
+                    )
+                  }
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-600 hover:text-white"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next media highlight"
+                  onClick={() =>
+                    setNewsIndex((current) => (current + 1) % newsImages.length)
+                  }
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-600 hover:text-white"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {newsCarouselItems.map((item) => (
+              <article
+                key={item.id}
+                className="overflow-hidden rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <div className="aspect-[4/3] bg-slate-100 p-3 flex items-center justify-center">
+                  <Image
+                    src={item.url}
+                    alt={item.alt}
+                    width={item.width || 640}
+                    height={item.height || 480}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-black text-slate-900">
+                    {item.title || "Media Highlight"}
+                  </h3>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {newsHasCarousel && (
+            <div className="mt-8 flex items-center justify-center gap-2">
+              {newsImages.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-label={`Show media highlight ${index + 1}`}
+                  onClick={() => setNewsIndex(index)}
+                  className={`h-2.5 rounded-full transition-all ${
+                    index === safeNewsIndex
+                      ? "w-9 bg-rose-600"
+                      : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

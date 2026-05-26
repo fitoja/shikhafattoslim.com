@@ -13,6 +13,7 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
+  Grid,
 } from "lucide-react";
 
 import ShikhaImg from "../public/assets/shikha.png";
@@ -57,7 +58,9 @@ function getCarouselItems(items: MediaItem[], activeIndex: number) {
     return items;
   }
 
-  return [0, 1, 2].map((offset) => items[(activeIndex + offset) % items.length]);
+  return [0, 1, 2].map(
+    (offset) => items[(activeIndex + offset) % items.length],
+  );
 }
 
 type MediaSection =
@@ -105,7 +108,8 @@ const fallbackSections: Record<string, SectionContent> = {
   before_after: {
     key: "before_after",
     title: "Real Transformations",
-    subtitle: "Visible journeys from clients who followed the Fat To Slim plan.",
+    subtitle:
+      "Visible journeys from clients who followed the Fat To Slim plan.",
     body: "",
     isPublished: true,
     order: 2,
@@ -243,7 +247,8 @@ export default function LandingPage() {
     sections.before_after ?? fallbackSections.before_after;
   const achievementsContent =
     sections.achievements ?? fallbackSections.achievements;
-  const newsContent = sections.celebrity_news ?? fallbackSections.celebrity_news;
+  const newsContent =
+    sections.celebrity_news ?? fallbackSections.celebrity_news;
   const beforeAfterImages = media.before_after.slice(0, 8);
   const achievementImages = media.achievements.slice(0, 6);
   const newsImages = media.celebrity_news.slice(0, 6);
@@ -287,9 +292,9 @@ export default function LandingPage() {
             >
               Shark Tank S4
             </a>
-            <a href="#contact" className="hover:text-rose-600 transition">
+            {/* <a href="#contact" className="hover:text-rose-600 transition">
               Consultation
-            </a>
+            </a> */}
           </div>
 
           <a
@@ -307,82 +312,223 @@ export default function LandingPage() {
         {/* Background Accents */}
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:40px_40px] opacity-20 -z-10" />
         <div className="absolute top-1/4 right-0 w-1/2 h-full bg-gradient-to-l from-rose-50/50 to-transparent -z-10" />
-
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-          <div className="py-12">
-            <div className="inline-flex items-center space-x-2 bg-slate-100 text-slate-800 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest mb-8 border border-slate-200">
-              <ShieldCheck size={14} className="text-rose-600" />
-              <span>Certified Celebrity Nutritionist</span>
-            </div>
-
-            <h1 className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8 text-slate-900">
-              Eat Big. <br />
-              <span className="text-rose-600">No Exercise.</span> <br />
-              Lose Fast.
-            </h1>
-
-            <p className="text-xl text-slate-500 max-w-lg mb-12 leading-relaxed font-medium">
-              Join{" "}
-              <span className="text-black font-bold">
-                Shikha Aggarwal Sharma
-              </span>{" "}
-              and transform your body using the ancient science of Indian
-              Kitchen Spices.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <div className="flex items-center space-x-3 bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">
-                <CheckCircle size={20} className="text-rose-600" />
-                <span className="text-sm font-bold text-slate-700">
-                  Home Cooked Diet
-                </span>
+        <div style={{ display: "grid" }}>
+          <div
+            style={{
+              borderBottom: "1px solid lightgrey",
+              paddingBottom: "30px",
+            }}
+            className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-24 items-center"
+          >
+            <div className="py-12">
+              <div className="inline-flex items-center space-x-2 bg-slate-100 text-slate-800 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest mb-8 border border-slate-200">
+                <ShieldCheck size={14} className="text-rose-600" />
+                <span>Certified Celebrity Nutritionist</span>
               </div>
 
-              <div className="flex items-center space-x-3 bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">
-                <CheckCircle size={20} className="text-rose-600" />
-                <span className="text-sm font-bold text-slate-700">
-                  Metabolism Focus
-                </span>
+              <h1 className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8 text-slate-900">
+                Eat Sleep
+                <br />
+                <span className="text-rose-600">No Exercise</span> <br />
+                Lose weight
+              </h1>
+
+              <p className="text-xl text-slate-500 max-w-lg mb-12 leading-relaxed font-medium">
+                Join{" "}
+                <span className="text-black font-bold">
+                  Shikha Aggarwal Sharma
+                </span>{" "}
+                and transform your body using the ancient science of Indian
+                Kitchen Spices.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <div className="flex items-center space-x-3 bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">
+                  <CheckCircle size={20} className="text-rose-600" />
+                  <span className="text-sm font-bold text-slate-700">
+                    Home Cooked Diet
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3 bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">
+                  <CheckCircle size={20} className="text-rose-600" />
+                  <span className="text-sm font-bold text-slate-700">
+                    Metabolism Focus
+                  </span>
+                </div>
               </div>
+
+              <a
+                className="bg-black text-white px-12 py-6 rounded-2xl font-black text-lg shadow-2xl hover:bg-rose-600 transition-all inline-flex items-center group"
+              >
+                Start Your Journey now{" "}
+                <ArrowRight className="ml-3 group-hover:translate-x-1 transition" />
+              </a>
             </div>
 
-            <a
-              href="#contact"
-              className="bg-black text-white px-12 py-6 rounded-2xl font-black text-lg shadow-2xl hover:bg-rose-600 transition-all inline-flex items-center group"
-            >
-              Start Your Journey{" "}
-              <ArrowRight className="ml-3 group-hover:translate-x-1 transition" />
-            </a>
+            <div className="relative">
+              <div className="absolute -inset-10 bg-rose-50 rounded-full blur-[120px] opacity-60 -z-10" />
+
+              <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-2xl border-[20px] border-white aspect-[4/5] bg-slate-50">
+                {heroImage ? (
+                  <Image
+                    src={heroImage.url}
+                    alt={heroImage.alt || "Shikha Aggarwal Sharma"}
+                    width={heroImage.width || 900}
+                    height={heroImage.height || 1125}
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                ) : (
+                  <Image
+                    src={ShikhaImg}
+                    alt="Shikha Aggarwal Sharma"
+                    className="w-full h-full object-contain"
+                    priority
+                  />
+                )}
+              </div>
+
+              <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl z-20 hidden xl:block border border-rose-50">
+                <p className="text-4xl font-black text-rose-600">10k+</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 text-center">
+                  Success Stories
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="relative">
-            <div className="absolute -inset-10 bg-rose-50 rounded-full blur-[120px] opacity-60 -z-10" />
+          <div
+            id="contact"
+            className="px-36 py-8 grid lg:grid-cols-12 gap-10 lg:gap-16 items-start"
+          >
+            <div className="lg:col-span-5">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-600 mb-5">
+                Contact Us
+              </h4>
 
-            <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-2xl border-[20px] border-white aspect-[4/5] bg-slate-50">
-              {heroImage ? (
-                <Image
-                  src={heroImage.url}
-                  alt={heroImage.alt || "Shikha Aggarwal Sharma"}
-                  width={heroImage.width || 900}
-                  height={heroImage.height || 1125}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              ) : (
-                <Image
-                  src={ShikhaImg}
-                  alt="Shikha Aggarwal Sharma"
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              )}
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-6">
+                Get a consultation call
+              </h2>
+
+              <p className="text-slate-500 text-lg leading-relaxed font-medium max-w-md">
+                Share your basic details and the team will receive them directly
+                for follow-up.
+              </p>
             </div>
 
-            <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl z-20 hidden xl:block border border-rose-50">
-              <p className="text-4xl font-black text-rose-600">10k+</p>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 text-center">
-                Success Stories
-              </p>
+            <div className="lg:col-span-7">
+              <form
+                className="bg-white border border-slate-100 rounded-[2rem] p-6 md:p-8 shadow-xl shadow-slate-200/60"
+                onSubmit={handleConsultationSubmit}
+              >
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Name
+                    </span>
+                    <input
+                      name="name"
+                      type="text"
+                      value={consultationForm.name}
+                      onChange={handleConsultationChange}
+                      required
+                      autoComplete="name"
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Your name"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Phone number
+                    </span>
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={consultationForm.phone}
+                      onChange={handleConsultationChange}
+                      required
+                      autoComplete="tel"
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="+91 98765 43210"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Height
+                    </span>
+                    <input
+                      name="height"
+                      type="text"
+                      value={consultationForm.height}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Example: 5'6 or 168 cm"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Weight
+                    </span>
+                    <input
+                      name="weight"
+                      type="text"
+                      value={consultationForm.weight}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Example: 72 kg"
+                    />
+                  </label>
+
+                  <label className="block sm:col-span-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Age
+                    </span>
+                    <input
+                      name="age"
+                      type="number"
+                      min="1"
+                      max="120"
+                      value={consultationForm.age}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Your age"
+                    />
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={formStatus === "submitting"}
+                  className="mt-5 w-full rounded-2xl bg-rose-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-rose-100 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70 flex items-center justify-center gap-3"
+                >
+                  {formStatus === "submitting" ? (
+                    <Loader2 className="animate-spin" size={18} />
+                  ) : (
+                    <Send size={18} />
+                  )}
+                  {formStatus === "submitting" ? "Sending" : "Send Details"}
+                </button>
+
+                {formMessage && (
+                  <p
+                    aria-live="polite"
+                    className={`mt-4 text-sm font-bold ${
+                      formStatus === "success"
+                        ? "text-emerald-600"
+                        : "text-rose-600"
+                    }`}
+                  >
+                    {formMessage}
+                  </p>
+                )}
+              </form>
             </div>
           </div>
         </div>
@@ -406,9 +552,10 @@ export default function LandingPage() {
               </h2>
 
               <p className="text-slate-400 text-xl mb-10 leading-relaxed font-light">
-                Shikha brought her &quot;Kitchen Spice&quot; approach to a national
-                audience, spotlighting a simple belief: sustainable weight loss
-                can begin with the food already cooked in Indian homes.
+                Shikha brought her &quot;Kitchen Spice&quot; approach to a
+                national audience, spotlighting a simple belief: sustainable
+                weight loss can begin with the food already cooked in Indian
+                homes.
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4">
@@ -801,144 +948,10 @@ export default function LandingPage() {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer
-        id="contact"
-        className="bg-[#F8FAFC] pt-32 pb-12 border-t border-slate-200 overflow-hidden relative"
-      >
+      <footer className="bg-[#F8FAFC] pt-10 pb-4 border-t border-slate-200 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-rose-50/30 to-transparent -z-0" />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start mb-24">
-            <div className="lg:col-span-5">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-600 mb-5">
-                Contact Us
-              </h4>
-
-              <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight mb-6">
-                Get a consultation call
-              </h2>
-
-              <p className="text-slate-500 text-lg leading-relaxed font-medium max-w-md">
-                Share your basic details and the team will receive them
-                directly for follow-up.
-              </p>
-            </div>
-
-            <div className="lg:col-span-7">
-              <form
-                className="bg-white border border-slate-100 rounded-[2rem] p-6 md:p-8 shadow-xl shadow-slate-200/60"
-                onSubmit={handleConsultationSubmit}
-              >
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <label className="block">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Name
-                    </span>
-                    <input
-                      name="name"
-                      type="text"
-                      value={consultationForm.name}
-                      onChange={handleConsultationChange}
-                      required
-                      autoComplete="name"
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Your name"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Phone number
-                    </span>
-                    <input
-                      name="phone"
-                      type="tel"
-                      value={consultationForm.phone}
-                      onChange={handleConsultationChange}
-                      required
-                      autoComplete="tel"
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="+91 98765 43210"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Height
-                    </span>
-                    <input
-                      name="height"
-                      type="text"
-                      value={consultationForm.height}
-                      onChange={handleConsultationChange}
-                      required
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Example: 5'6 or 168 cm"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Weight
-                    </span>
-                    <input
-                      name="weight"
-                      type="text"
-                      value={consultationForm.weight}
-                      onChange={handleConsultationChange}
-                      required
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Example: 72 kg"
-                    />
-                  </label>
-
-                  <label className="block sm:col-span-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Age
-                    </span>
-                    <input
-                      name="age"
-                      type="number"
-                      min="1"
-                      max="120"
-                      value={consultationForm.age}
-                      onChange={handleConsultationChange}
-                      required
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Your age"
-                    />
-                  </label>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={formStatus === "submitting"}
-                  className="mt-5 w-full rounded-2xl bg-rose-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-rose-100 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70 flex items-center justify-center gap-3"
-                >
-                  {formStatus === "submitting" ? (
-                    <Loader2 className="animate-spin" size={18} />
-                  ) : (
-                    <Send size={18} />
-                  )}
-                  {formStatus === "submitting" ? "Sending" : "Send Details"}
-                </button>
-
-                {formMessage && (
-                  <p
-                    aria-live="polite"
-                    className={`mt-4 text-sm font-bold ${
-                      formStatus === "success"
-                        ? "text-emerald-600"
-                        : "text-rose-600"
-                    }`}
-                  >
-                    {formMessage}
-                  </p>
-                )}
-              </form>
-            </div>
-          </div>
-
           <div className="grid lg:grid-cols-12 gap-16 mb-24">
             <div className="lg:col-span-5 text-center lg:text-left">
               {/* FOOTER LOGO */}
@@ -951,20 +964,22 @@ export default function LandingPage() {
               </div>
 
               <p className="text-slate-500 text-lg leading-relaxed mb-10 max-w-sm font-medium mx-auto lg:mx-0">
-                Pioneering the &quot;Eat Sleep No Exercise&quot; movement globally.
-                Headquartered in New Delhi, serving clients worldwide.
+                Pioneering the &quot;Eat Sleep No Exercise&quot; movement
+                globally. Headquartered in New Delhi, serving clients worldwide.
               </p>
 
               <div className="flex space-x-4 justify-center lg:justify-start">
                 <a
-                  href="#"
+                  href="https://www.instagram.com/fattoslim.sas.headoffice/"
+                  target="_blank"
                   className="w-12 h-12 bg-white border border-slate-200 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm"
                 >
                   <InstagramLogo size={20} />
                 </a>
 
                 <a
-                  href="#"
+                  href="https://www.youtube.com/channel/UCWoVSc-BiH4ZuhSVx5WsmPA?view_as=subscriber"
+                  target="_blank"
                   className="w-12 h-12 bg-white border border-slate-200 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm"
                 >
                   <YoutubeLogo size={20} />

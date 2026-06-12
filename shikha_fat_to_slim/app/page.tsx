@@ -13,7 +13,7 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
-  Grid,
+  X,
 } from "lucide-react";
 
 import ShikhaImg from "../public/assets/shikha.png";
@@ -156,6 +156,7 @@ export default function LandingPage() {
   const [siteContent, setSiteContent] = useState<SiteContent | null>(null);
   const [beforeAfterIndex, setBeforeAfterIndex] = useState(0);
   const [newsIndex, setNewsIndex] = useState(0);
+  const [isContactPopupOpen, setIsContactPopupOpen] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -177,6 +178,19 @@ export default function LandingPage() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!isContactPopupOpen) {
+      return;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isContactPopupOpen]);
 
   const handleConsultationChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -228,6 +242,7 @@ export default function LandingPage() {
       setFormMessage(
         data.message || "Thank you. Your details have been sent successfully.",
       );
+      setIsContactPopupOpen(false);
     } catch (error) {
       setFormStatus("error");
       setFormMessage(
@@ -306,6 +321,176 @@ export default function LandingPage() {
           </a>
         </div>
       </nav>
+
+      {isContactPopupOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/75 px-4 py-6 backdrop-blur-md">
+          <div className="relative w-full max-w-4xl overflow-hidden rounded-[2rem] bg-white shadow-2xl">
+            <button
+              type="button"
+              aria-label="Close contact form"
+              onClick={() => setIsContactPopupOpen(false)}
+              className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-800 shadow-lg shadow-slate-900/10 transition hover:bg-rose-600 hover:text-white"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="grid max-h-[calc(100vh-2rem)] overflow-y-auto lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="bg-slate-950 p-7 text-white sm:p-9 lg:p-10">
+                <div className="mb-10 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-rose-100">
+                  <ShieldCheck size={14} className="text-rose-400" />
+                  Consultation
+                </div>
+
+                <h2 className="text-4xl font-black leading-tight tracking-tighter sm:text-5xl">
+                  Start your Fat To Slim journey
+                </h2>
+
+                <p className="mt-5 text-base font-medium leading-relaxed text-slate-300">
+                  Share your details and the team will connect with you for the
+                  next step.
+                </p>
+
+                <div className="mt-10 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                    <p className="text-2xl font-black text-white">10k+</p>
+                    <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Stories
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                    <p className="text-2xl font-black text-white">0</p>
+                    <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Gym Rules
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <form
+                className="p-6 sm:p-8 lg:p-10"
+                onSubmit={handleConsultationSubmit}
+              >
+                <div className="mb-6 pr-12">
+                  <h3 className="text-2xl font-black tracking-tighter text-slate-900">
+                    Contact Us
+                  </h3>
+                  <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-500">
+                    Fill your basic details below.
+                  </p>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Name
+                    </span>
+                    <input
+                      name="name"
+                      type="text"
+                      value={consultationForm.name}
+                      onChange={handleConsultationChange}
+                      required
+                      autoComplete="name"
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Your name"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Phone number
+                    </span>
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={consultationForm.phone}
+                      onChange={handleConsultationChange}
+                      required
+                      autoComplete="tel"
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="+91 98765 43210"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Height
+                    </span>
+                    <input
+                      name="height"
+                      type="text"
+                      value={consultationForm.height}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Example: 5'6 or 168 cm"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Weight
+                    </span>
+                    <input
+                      name="weight"
+                      type="text"
+                      value={consultationForm.weight}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Example: 72 kg"
+                    />
+                  </label>
+
+                  <label className="block sm:col-span-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      Age
+                    </span>
+                    <input
+                      name="age"
+                      type="number"
+                      min="1"
+                      max="120"
+                      value={consultationForm.age}
+                      onChange={handleConsultationChange}
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                      placeholder="Your age"
+                    />
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={formStatus === "submitting"}
+                  className="mt-5 flex w-full items-center justify-center gap-3 rounded-2xl bg-rose-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-rose-100 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {formStatus === "submitting" ? (
+                    <Loader2 className="animate-spin" size={18} />
+                  ) : (
+                    <Send size={18} />
+                  )}
+                  {formStatus === "submitting" ? "Sending" : "Send Details"}
+                </button>
+
+                {formMessage && (
+                  <p
+                    aria-live="polite"
+                    className={`mt-4 text-sm font-bold ${
+                      formStatus === "success"
+                        ? "text-emerald-600"
+                        : "text-rose-600"
+                    }`}
+                  >
+                    {formMessage}
+                  </p>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* --- HERO SECTION: REFINED & FIXED SPACING --- */}
       <section className="relative pt-32 lg:pt-24 min-h-screen flex items-center overflow-hidden">

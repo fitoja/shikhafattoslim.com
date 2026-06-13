@@ -19,6 +19,8 @@ import {
 import ShikhaImg from "../public/assets/shikha.png";
 import Logo from "../public/assets/logo.png";
 
+const goalOptions = ["Weight loss", "Weight gain", "Other"];
+
 // --- CUSTOM BRAND ICONS ---
 const InstagramLogo = ({ size = 24 }) => (
   <svg
@@ -145,9 +147,8 @@ export default function LandingPage() {
   const [consultationForm, setConsultationForm] = useState({
     name: "",
     phone: "",
-    height: "",
     weight: "",
-    age: "",
+    goal: "",
   });
   const [formStatus, setFormStatus] = useState<
     "idle" | "submitting" | "success" | "error"
@@ -193,7 +194,7 @@ export default function LandingPage() {
   }, [isContactPopupOpen]);
 
   const handleConsultationChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const fieldName = event.target.name as keyof typeof consultationForm;
 
@@ -234,9 +235,8 @@ export default function LandingPage() {
       setConsultationForm({
         name: "",
         phone: "",
-        height: "",
         weight: "",
-        age: "",
+        goal: "",
       });
       setFormStatus("success");
       setFormMessage(
@@ -283,13 +283,13 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-rose-600 selection:text-white">
       {/* --- NAVIGATION --- */}
       <nav className="fixed w-full z-[100] bg-white/95 backdrop-blur-xl border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 sm:h-24 flex items-center justify-between">
           {/* LOGO */}
           <div className="flex items-center">
             <Image
               src={Logo}
               alt="Fat To Slim Logo"
-              className="h-14 w-auto object-contain"
+              className="h-12 w-auto object-contain sm:h-14"
               priority
             />
           </div>
@@ -315,7 +315,7 @@ export default function LandingPage() {
           <a
             href="https://wa.me/919211505566"
             target="_blank"
-            className="bg-rose-600 text-white px-8 py-4 rounded-full font-black shadow-lg shadow-rose-100 hover:bg-black transition-all text-xs uppercase tracking-widest active:scale-95"
+            className="bg-rose-600 text-white px-4 py-3 rounded-full font-black shadow-lg shadow-rose-100 hover:bg-black transition-all text-[10px] uppercase tracking-widest active:scale-95 sm:px-8 sm:py-4 sm:text-xs"
           >
             Book Appointment
           </a>
@@ -341,7 +341,7 @@ export default function LandingPage() {
                   Consultation
                 </div>
 
-                <h2 className="text-4xl font-black leading-tight tracking-tighter sm:text-5xl">
+                <h2 className="text-3xl font-black leading-tight tracking-tighter sm:text-5xl">
                   Start your Fat To Slim journey
                 </h2>
 
@@ -415,21 +415,6 @@ export default function LandingPage() {
 
                   <label className="block">
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Height
-                    </span>
-                    <input
-                      name="height"
-                      type="text"
-                      value={consultationForm.height}
-                      onChange={handleConsultationChange}
-                      required
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Example: 5'6 or 168 cm"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                       Weight
                     </span>
                     <input
@@ -445,19 +430,22 @@ export default function LandingPage() {
 
                   <label className="block sm:col-span-2">
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Age
+                      Goal
                     </span>
-                    <input
-                      name="age"
-                      type="number"
-                      min="1"
-                      max="120"
-                      value={consultationForm.age}
+                    <select
+                      name="goal"
+                      value={consultationForm.goal}
                       onChange={handleConsultationChange}
                       required
                       className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Your age"
-                    />
+                    >
+                      <option value="">Select your goal</option>
+                      {goalOptions.map((goal) => (
+                        <option key={goal} value={goal}>
+                          {goal}
+                        </option>
+                      ))}
+                    </select>
                   </label>
                 </div>
 
@@ -493,7 +481,7 @@ export default function LandingPage() {
       )}
 
       {/* --- HERO SECTION: REFINED & FIXED SPACING --- */}
-      <section className="relative pt-32 lg:pt-24 min-h-screen flex items-center overflow-hidden">
+      <section className="relative pt-28 lg:pt-24 min-h-screen flex items-center overflow-hidden">
         {/* Background Accents */}
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:40px_40px] opacity-20 -z-10" />
         <div className="absolute top-1/4 right-0 w-1/2 h-full bg-gradient-to-l from-rose-50/50 to-transparent -z-10" />
@@ -544,7 +532,7 @@ export default function LandingPage() {
               </div>
 
               <a
-                className="bg-black text-white px-12 py-6 rounded-2xl font-black text-lg shadow-2xl hover:bg-rose-600 transition-all inline-flex items-center group"
+                className="bg-black text-white px-6 py-4 rounded-2xl font-black text-sm shadow-2xl hover:bg-rose-600 transition-all inline-flex w-full items-center justify-center group sm:w-auto sm:px-12 sm:py-6 sm:text-lg"
               >
                 Start Your Journey now{" "}
                 <ArrowRight className="ml-3 group-hover:translate-x-1 transition" />
@@ -554,7 +542,7 @@ export default function LandingPage() {
             <div className="relative">
               <div className="absolute -inset-10 bg-rose-50 rounded-full blur-[120px] opacity-60 -z-10" />
 
-              <div className="relative z-10 rounded-[4rem] overflow-hidden shadow-2xl border-[20px] border-white aspect-[4/5] bg-slate-50">
+              <div className="relative z-10 rounded-[2rem] overflow-hidden shadow-2xl border-[10px] border-white aspect-[4/5] bg-slate-50 sm:rounded-[4rem] sm:border-[20px]">
                 {heroImage ? (
                   <Image
                     src={heroImage.url}
@@ -585,7 +573,7 @@ export default function LandingPage() {
 
           <div
             id="contact"
-            className="px-36 py-8 grid lg:grid-cols-12 gap-10 lg:gap-16 items-start"
+            className="px-6 py-8 grid lg:grid-cols-12 gap-10 lg:gap-16 items-start sm:px-8 lg:px-36"
           >
             <div className="lg:col-span-5">
               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-600 mb-5">
@@ -642,21 +630,6 @@ export default function LandingPage() {
 
                   <label className="block">
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Height
-                    </span>
-                    <input
-                      name="height"
-                      type="text"
-                      value={consultationForm.height}
-                      onChange={handleConsultationChange}
-                      required
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Example: 5'6 or 168 cm"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                       Weight
                     </span>
                     <input
@@ -672,19 +645,22 @@ export default function LandingPage() {
 
                   <label className="block sm:col-span-2">
                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Age
+                      Goal
                     </span>
-                    <input
-                      name="age"
-                      type="number"
-                      min="1"
-                      max="120"
-                      value={consultationForm.age}
+                    <select
+                      name="goal"
+                      value={consultationForm.goal}
                       onChange={handleConsultationChange}
                       required
                       className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white"
-                      placeholder="Your age"
-                    />
+                    >
+                      <option value="">Select your goal</option>
+                      {goalOptions.map((goal) => (
+                        <option key={goal} value={goal}>
+                          {goal}
+                        </option>
+                      ))}
+                    </select>
                   </label>
                 </div>
 

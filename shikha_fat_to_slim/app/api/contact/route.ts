@@ -5,18 +5,18 @@ export const runtime = "nodejs";
 type ConsultationPayload = {
   name?: unknown;
   phone?: unknown;
-  height?: unknown;
   weight?: unknown;
-  age?: unknown;
+  goal?: unknown;
 };
 
 type LeadFields = {
   name: string;
   phone: string;
-  height: string;
   weight: string;
-  age: string;
+  goal: string;
 };
+
+const allowedGoals = new Set(["Weight loss", "Weight gain", "Other"]);
 
 function readField(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -26,19 +26,16 @@ function validatePayload(payload: ConsultationPayload): LeadFields {
   const fields = {
     name: readField(payload.name),
     phone: readField(payload.phone),
-    height: readField(payload.height),
     weight: readField(payload.weight),
-    age: readField(payload.age),
+    goal: readField(payload.goal),
   };
 
-  if (
-    !fields.name ||
-    !fields.phone ||
-    !fields.height ||
-    !fields.weight ||
-    !fields.age
-  ) {
+  if (!fields.name || !fields.phone || !fields.weight || !fields.goal) {
     throw new Error("Please fill in every field.");
+  }
+
+  if (!allowedGoals.has(fields.goal)) {
+    throw new Error("Please choose a valid goal.");
   }
 
   return fields;

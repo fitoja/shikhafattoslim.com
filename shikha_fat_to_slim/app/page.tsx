@@ -264,9 +264,9 @@ export default function LandingPage() {
     sections.achievements ?? fallbackSections.achievements;
   const newsContent =
     sections.celebrity_news ?? fallbackSections.celebrity_news;
-  const beforeAfterImages = media.before_after.slice(0, 8);
-  const achievementImages = media.achievements.slice(0, 6);
-  const newsImages = media.celebrity_news.slice(0, 6);
+  const beforeAfterImages = media.before_after.slice(0, 50);
+  const achievementImages = media.achievements.slice(0, 50);
+  const newsImages = media.celebrity_news.slice(0, 50);
   const safeBeforeAfterIndex = beforeAfterImages.length
     ? beforeAfterIndex % beforeAfterImages.length
     : 0;
@@ -313,7 +313,7 @@ export default function LandingPage() {
           </div>
 
           <a
-            href="https://wa.me/919211505566"
+            href="https://wa.me/918796338963"
             target="_blank"
             className="bg-rose-600 text-white px-4 py-3 rounded-full font-black shadow-lg shadow-rose-100 hover:bg-black transition-all text-[10px] uppercase tracking-widest active:scale-95 sm:px-8 sm:py-4 sm:text-xs"
           >
@@ -352,7 +352,7 @@ export default function LandingPage() {
 
                 <div className="mt-10 grid grid-cols-2 gap-3">
                   <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
-                    <p className="text-2xl font-black text-white">10k+</p>
+                    <p className="text-2xl font-black text-white">2 Lac+</p>
                     <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                       Stories
                     </p>
@@ -563,7 +563,7 @@ export default function LandingPage() {
               </div>
 
               <div className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl z-20 hidden xl:block border border-rose-50">
-                <p className="text-4xl font-black text-rose-600">10k+</p>
+                <p className="text-4xl font-black text-rose-600">2 Lac+</p>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 text-center">
                   Success Stories
                 </p>
@@ -709,7 +709,7 @@ export default function LandingPage() {
 
               <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight italic">
                 Shark Tank India <br />
-                <span className="text-rose-500 font-bold">Season 4</span>
+                {/* <span className="text-rose-500 font-bold">Season 4</span> */}
               </h2>
 
               <p className="text-slate-400 text-xl mb-10 leading-relaxed font-light">
@@ -757,7 +757,7 @@ export default function LandingPage() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="rounded-2xl bg-black/30 p-5 border border-white/10">
-                  <p className="text-3xl font-black text-white">10k+</p>
+                  <p className="text-3xl font-black text-white">2 Lac+</p>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-2">
                     Stories
                   </p>
@@ -1175,10 +1175,10 @@ export default function LandingPage() {
                   </div>
 
                   <a
-                    href="tel:+919211505566"
+                    href="tel:+918796338963"
                     className="text-sm font-bold text-slate-900"
                   >
-                    +91 92115 05566
+                    +91 87963 38963
                   </a>
                 </div>
 
@@ -1188,10 +1188,10 @@ export default function LandingPage() {
                   </div>
 
                   <a
-                    href="mailto:info@shikhafattoslim.com"
+                    href="mailto:shikhaaggarwalsharmafattoslim@gmail.com"
                     className="text-sm font-bold text-slate-900"
                   >
-                    info@shikhafattoslim.com
+                    shikhaaggarwalsharmafattoslim@gmail.com
                   </a>
                 </div>
               </div>
